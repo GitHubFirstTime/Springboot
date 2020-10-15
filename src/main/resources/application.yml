@@ -1,0 +1,111 @@
+server:
+  port: 8085
+logging:
+  config: classpath:log4j2.xml
+#  level:
+#    com.rlc.midServer.modules.fmb.dao: debug
+
+#    config: classpath:log4j2.xml
+spring:
+  kafka:
+    bootstrap-servers: 10.170.6.80:9092
+    listener: # 指定listener 容器中的线程数，用于提高并发量
+      concurrency: 5
+    template:
+      default-topic: eqpState
+    consumer:
+      max-poll-records: 200
+      auto-offset-reset: earliest # 最早未被消费的offset
+      key-deserializer: org.springframework.kafka.support.serializer.JsonSerializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonSerializer
+    producer:
+      batch-size: 1000 # 每次批量发送消息的数量
+      retries: 3
+      key-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+  datasource:
+    mesdb:
+      driver-class-name: oracle.jdbc.driver.OracleDriver
+      type: com.alibaba.druid.pool.DruidDataSource
+      jdbc-url: jdbc:oracle:thin:@10.170.6.45:1521/mesdbdg
+  #    url: jdbc:oracle:thin:@192.168.2.250:1521:db11g
+      username: ad300w
+      password: enc:X1IoeGpywmAYmRRtVoyN6g==
+      # 下面为连接池的补充设置，应用到上面所有数据源中
+      # 初始化大小，最小，最大
+      initialSize: 1
+      minIdle: 3
+      maxActive: 20
+      # 配置获取连接等待超时的时间
+      maxWait: 60000
+      # 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒
+      timeBetweenEvictionRunsMillis: 60000
+      # 配置一个连接在池中最小生存的时间，单位是毫秒
+      minEvictableIdleTimeMillis: 30000
+      #validationQuery: select 'x'
+      testWhileIdle: false
+      testOnBorrow: false
+      testOnReturn: false
+      # 打开PSCache，并且指定每个连接上PSCache的大小
+      poolPreparedStatements: true
+      maxPoolPreparedStatementPerConnectionSize: 20
+      # 配置监控统计拦截的filters，去掉后监控界面sql无法统计，'wall'用于防火墙
+      filters: stat,wall,slf4j
+      # 通过connectProperties属性来打开mergeSql功能；慢SQL记录
+      connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000
+      # 合并多个DruidDataSource的监控数据
+      useGlobalDataSourceStat: true
+    fmbdb:
+      driver-class-name: oracle.jdbc.driver.OracleDriver
+      type: com.alibaba.druid.pool.DruidDataSource
+      jdbc-url: jdbc:oracle:thin:@10.170.6.79:1521/fmb
+      #    url: jdbc:oracle:thin:@192.168.2.250:1521:db11g
+      username: fmb
+      password: enc:HD3g2WHCththCTGJPLhXtQ==
+      # 下面为连接池的补充设置，应用到上面所有数据源中
+      # 初始化大小，最小，最大
+      initialSize: 1
+      minIdle: 3
+      maxActive: 20
+      # 配置获取连接等待超时的时间
+      maxWait: 60000
+      # 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒
+      timeBetweenEvictionRunsMillis: 60000
+      # 配置一个连接在池中最小生存的时间，单位是毫秒
+      minEvictableIdleTimeMillis: 30000
+      #validationQuery: select 'x'
+      testWhileIdle: false
+      testOnBorrow: false
+      testOnReturn: false
+      # 打开PSCache，并且指定每个连接上PSCache的大小
+      poolPreparedStatements: true
+      maxPoolPreparedStatementPerConnectionSize: 20
+      # 配置监控统计拦截的filters，去掉后监控界面sql无法统计，'wall'用于防火墙
+      filters: stat,wall,slf4j
+      # 通过connectProperties属性来打开mergeSql功能；慢SQL记录
+      connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000
+      # 合并多个DruidDataSource的监控数据
+      useGlobalDataSourceStat: true
+#指定映射xml文件位置
+#classpath对应resource，*.xml表示配置mapper下所有xml文件
+mybatis:
+#  config-location: classpath:/mybatis/mybatis-config.xml
+  mapper-locations: classpath:/mappings/modules/*/*.xml
+  # 注意：对应实体类的路径
+  type-aliases-package: com.rlc.midServer.modules.*.entity
+
+#  type-handlers-package: com.rlc.midServer.common.mapper.typeHandler
+#pagehelper:
+#  helperDialect: oracle
+#  reasonable: true
+#  supportMethodsArguments: true
+#  params: count=countSql
+#pagehelper:
+#  helper-dialect: Oracle
+  #分页合理化参数，默认值为false。当该参数设置为 true 时，pageNum<=0 时会查询第一页， pageNum>pages（超过总数时），会查询最后一页
+#  reasonable: true
+  # 支持通过 Mapper 接口参数来传递分页参数
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+#  support-methods-arguments: true
+

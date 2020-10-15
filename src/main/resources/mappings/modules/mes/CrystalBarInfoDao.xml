@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.rlc.midServer.modules.mes.dao.CrystalBarInfoDao">
+    <!--获取设备上晶棒信息-->
+    <select id="getCrystalInfoList" parameterType="java.lang.String" resultType="com.rlc.midServer.modules.mes.entity.CrystalBarInfoDTO" >
+        SELECT
+        lot.appId,
+        step.trackInTime,
+        step.trackInLocation,
+        lot.ORDERNUMBER ,
+        lotcuste.color as color,
+        lotcuste.TOTALLENGTH as totalLength,
+        LENGTH(SUBTOTALLENGTH)-LENGTH(REGEXP_REPLACE(SUBTOTALLENGTH, ',', '')) as moldType
+        FROM
+        FWLOT lot,
+        FWWIPSTEP step ,
+        fablotcustext lotcuste
+        WHERE
+        SUBTOTALLENGTH is not null
+        and lot.SYSID =step.LOTOBJECT
+        and lot.SYSID = lotcuste.PARENT(+)
+        AND trackinlocation = #{eqpName}
+        AND <![CDATA[rownum< 5]]>
+    </select>
+    <!--查询XQ对应缓存工位上晶棒信息-->
+    <select id="getBufferStationCrystalInfoOne" parameterType="java.lang.String" resultType="com.rlc.midServer.modules.mes.entity.CrystalBarInfoDTO">
+        SELECT
+        lot.appId,
+        step.trackInTime,
+        step.trackInLocation,
+        lot.ORDERNUMBER ,
+        lotcuste.color as color,
+        lotcuste.TOTALLENGTH as totalLength,
+        LENGTH(SUBTOTALLENGTH)-LENGTH(REGEXP_REPLACE(SUBTOTALLENGTH, ',', '')) as moldType
+        FROM
+        FWLOT lot,
+        FWWIPSTEP step ,
+        fablotcustext lotcuste
+        WHERE
+        SUBTOTALLENGTH is not null
+        and lot.SYSID =step.LOTOBJECT
+        and lot.SYSID = lotcuste.PARENT(+)
+        AND lot.appId = (SELECT LOTID AS "appId" FROM FABEQPRUNINFO WHERE EQPID = #{eqpName})
+    </select>
+</mapper>
