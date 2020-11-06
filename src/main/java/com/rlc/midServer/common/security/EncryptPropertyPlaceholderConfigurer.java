@@ -47,6 +47,9 @@ public class EncryptPropertyPlaceholderConfigurer extends PropertySourcesPlaceho
         for (Map.Entry entry : mergedProperties.entrySet()) {
             if (entry.getValue().toString().startsWith(PREFIX_ENC)) {
                 String key = System.getProperty("enc.key");
+                if (StringUtils.isEmpty(key)){
+                    key="zhonghuan2020@";
+                }
 //                System.out.println("ssssss==========="+key);
                 String value = entry.getValue().toString().replace(PREFIX_ENC, StringUtils.EMPTY);
 //                System.out.println("ssssssvalue==========="+value);

@@ -234,6 +234,16 @@
             <artifactId>java-jwt</artifactId>
             <version>3.8.2</version>
         </dependency>
+        <!-- 整合Redis缓存支持 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-redis</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
